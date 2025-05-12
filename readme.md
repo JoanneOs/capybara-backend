@@ -72,3 +72,6 @@ Contains all route handlers
 Implements CRUD operations
 Manages request/response cycles
 The system is now fully functional and ready for integration with frontend applications.
+
+frontend github:
+https://github.com/JoanneOs/Osman_Joanne_BOLTracker_Capstone.git
