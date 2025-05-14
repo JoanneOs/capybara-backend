@@ -5,7 +5,7 @@ const bolSchema = new mongoose.Schema(
   {
     loadNumber: {
       type: String,
-      required: true,
+      required: true, //required when creating a new BOL
       unique: true,
       trim: true, // Ensures no leading/trailing spaces
     },
