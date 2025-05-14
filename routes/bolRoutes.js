@@ -88,6 +88,18 @@ router.put('/:id', async (req, res) => {
 // DELETE BOL
 router.delete('/:id', async (req, res) => {
   try {
+
+    try {
+      const bol = await Bol.findById(req.params.id);
+      if (!bol) {
+        return res.status(404).json({ message: 'BOL not found' });
+      }
+  
+      // If there's an image associated with the BOL, delete it from Cloudinary
+      if (bol.image && bol.image.publicId) {
+        await cloudinary.uploader.destroy(bol.image.publicId);
+        // 'cloudinary.uploader.destroy()' uses the public ID to remove the image from Cloudinary.
+      }
     const deletedBol = await Bol.findByIdAndDelete(req.params.id);
     if (!deletedBol) {
       return res.status(404).json({ message: 'BOL not found' });
