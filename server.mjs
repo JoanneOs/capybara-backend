@@ -9,7 +9,11 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+//app.use(express.json());
+app.use(cors({
+  origin: ['https://osman-joanne-boltracker-capstone-frontend.onrender.com'], // Allow requests from the frontend's deployed URL
+}));
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/bol-system')
