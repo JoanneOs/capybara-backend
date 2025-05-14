@@ -1,7 +1,12 @@
 import express from 'express';
 import Bol from '../models/Bol.js';
+import cloudinary from '../config/cloudinary.js'; // Import the Cloudinary configuration
+import multer from 'multer'; // Import the multer middleware for handling file uploads
+
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() }); // Configure multer to store uploaded files in memory as Buffers
+
 
 // GET all BOLs
 router.get('/', async (req, res) => {
@@ -27,11 +32,28 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST new BOL
-router.post('/', async (req, res) => {
+
+router.post('/', upload.single('image'), async (req, res) => {
   try {
+    const { loadNumber, shipper, consignee, rate, miles, status } = req.body;
+    let imageResult = null;
+
+    if (req.file){
+      const base64Image = req.file.buffer.toString('base64');
+      const dataURI = `data:${req.file.mimetype};base64,${base64Image}`;
+      imageResult = await cloudinary.uploader.upload(dataURI, {
+        folder: 'bol_images', // Optional folder in Cloudinary to organize images
+      });
+    }
     const bol = new Bol({
-      ...req.body,
-      status: req.body.status || 'Pending' // Default status
+      loadNumber,
+      shipper,
+      consignee,
+      rate: parseFloat(rate),
+      miles: parseInt(miles),
+      status: status || 'Pending',
+      image: imageResult ? { url: imageResult.secure_url, publicId: imageResult.public_id } : {},
+
     });
     const newBol = await bol.save();
     res.status(201).json(newBol);
