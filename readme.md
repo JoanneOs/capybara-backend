@@ -74,7 +74,10 @@ Manages request/response cycles
 The system is now fully functional and ready for integration with frontend applications.
 
 frontend github:
-https://github.com/JoanneOs/Osman_Joanne_BOLTracker_Capstone.git
+new: 
+https://github.com/JoanneOs/Osman_Joanne_BOLTrack2_Capstone.git
+
+//https://github.com/JoanneOs/Osman_Joanne_BOLTracker_Capstone.git
 
 render: 
 

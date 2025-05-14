@@ -8,11 +8,14 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-app.use(cors());
-app.use(express.json());
-// app.use(cors({
-//   origin: ['https://osman-joanne-boltracker-capstone-frontend.onrender.com'], // Allow requests from the frontend's deployed URL
-// }));
+//app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',                 // Dev frontend
+    'https://frontendrendertest.onrender.com' // Prod frontend
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 
 
 // Connect to MongoDB
