@@ -4,8 +4,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bolRoutes from './routes/bolRoutes.js'; // Note the .js extension
 
-const PORT = process.env.PORT || 3000;
 dotenv.config();
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(cors());
