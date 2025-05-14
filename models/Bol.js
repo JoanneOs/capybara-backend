@@ -37,6 +37,10 @@ const bolSchema = new mongoose.Schema(
       enum: ['Pending', 'Paid', 'Disputed'],
       default: 'Pending',
     },
+    image: { // New field for Cloudinary image
+      url: { type: String },
+      publicId: { type: String },
+    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields
