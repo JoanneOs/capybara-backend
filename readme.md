@@ -84,3 +84,7 @@ render:
 https://back-end-pyu8.onrender.com //new
 
 https://osman-joanne-boltrack-capstone-backend.onrender.com
+
+_______________________________
+render last update:
+Frontend (https://frontendrendertest.onrender.com) loads data from https://back-end-pyu8.onrender.com/api/bols.
