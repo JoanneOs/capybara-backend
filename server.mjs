@@ -34,7 +34,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/bol-syste
 app.get('/', (req, res) => {
   res.send('BOL Tracker API');
 });
-
+//
 // Routes
 app.use('/api/bols', bolRoutes);
 
