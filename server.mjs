@@ -7,7 +7,25 @@ import bolRoutes from './routes/bolRoutes.js';
 dotenv.config();
 
 const app = express();
+<<<<<<< HEAD
 const PORT = process.env.PORT || 3000;
+=======
+//app.use(cors());
+// app.use(cors({
+//   origin: [
+//     'http://localhost:5173',                 // Dev frontend
+//     'https://frontendrendertest.onrender.com' // Prod frontend
+//   ],
+//   methods: ['GET', 'POST', 'PUT', 'DELETE']
+// }));
+
+app.use(cors({
+  origin: 'http://localhost:3001', // Your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true // If using cookies/auth
+}));
+>>>>>>> 6262440 (prod mode , cors config)
 
 // Middleware to parse JSON
 app.use(express.json());
