@@ -1,115 +1,105 @@
-BOL Tracker API – Backend
-This backend system is designed to manage Bill of Lading (BOL) records for a dispatching and logistics platform. It provides full CRUD functionality through RESTful endpoints and is intended to integrate with a React frontend. The API supports operations like creating, updating, retrieving, and deleting BOL entries.
+BOL Tracker API – Backend Implementation
 
-Frontend Repository
-Frontend GitHub Repo
-Live Frontend Deployment
+I built this backend system to manage Bill of Lading (BOL) records using Node.js, Express, and MongoDB. The API provides complete CRUD functionality through RESTful endpoints.
 
-Technologies Used
-Node.js
+Project Setup
 
-Express
+First, I initialized the backend structure:
 
-MongoDB
+Created the project directory with mkdir backend
+Initialized a Node.js project using npm init -y
+I installed these essential dependencies:
 
-Mongoose
+Express as our web framework
+Mongoose for MongoDB object modeling
+Dotenv for environment variables
+CORS to enable cross-origin requests
+The project follows this organized structure:
 
-Dotenv
+Models folder containing Bol.js for our data schema
+Routes folder with bolRoutes.js for endpoint logic
+Configuration files including .env and server.mjs
+For configuration, I:
 
-CORS
+Set up environment variables for port (3000) and MongoDB connection
+Initialized Git version control
+Created a .gitignore file to exclude node_modules and .env
+Server Implementation
 
-Render (for deployment)
+I configured the server to:
 
+Start in development mode using npm run dev
+Automatically restart with nodemon during development
+Handle all API requests through defined routes
 API Endpoints
-GET /api/bols – Retrieve all BOL records
 
-GET /api/bols/:id – Retrieve a single BOL record by ID
+I implemented these key endpoints:
 
-POST /api/bols – Create a new BOL record
+GET /api/bols
 
-PUT /api/bols/:id – Update an existing BOL record
+Retrieves all BOL records from the database
+POST /api/bols
 
-DELETE /api/bols/:id – Delete a BOL record
+Creates new BOL records
+Accepts JSON with loadNumber, shipper, consignee, rate, miles, and status
+GET /api/bols/{id}
 
-Each BOL entry includes fields such as:
+Returns a single BOL by its unique ID
+PUT /api/bols/{id}
 
-loadNumber
+Updates existing BOL records
+Accepts partial updates like status changes
+DELETE /api/bols/{id}
 
-shipper
+Removes BOL records from the system
+Core Components
 
-consignee
+I developed these main components:
 
-rate
+server.mjs
 
-miles
+Sets up Express server
+Establishes MongoDB connection
+Configures middleware and routes
+models/Bol.js
 
-status
+Defines the complete BOL schema
+Includes validation for required fields
+Structures our database documents
+routes/bolRoutes.js
 
-Project Structure
-go
-Copy code
-backend/
-├── models/
-│   └── Bol.js           // Mongoose schema
-├── routes/
-│   └── bolRoutes.js     // API route handlers
-├── server.mjs           // Express server config
-├── .env                 // Environment variables
-├── .gitignore
-├── package.json
-Getting Started (Local Installation)
-Clone the repository
-
-bash
-Copy code
-git clone https://github.com/JoanneOs/Osman_Joanne_BOLTrack2_Capstone.git
-cd backend
-Install dependencies
-
-bash
-Copy code
-npm install
-Create a .env file and add the following:
-
-ini
-Copy code
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-Run the server
-
-bash
-Copy code
-npm run dev
-Server runs locally at:
-http://localhost:3000/api/bols
-
-Deployed API
-Live backend hosted on Render:
-https://back-end-pyu8.onrender.com
+Contains all route handlers
+Implements CRUD operations
+Manages request/response cycles
+The system is now fully functional and ready for integration with frontend applications.
+------------------------------
 
 User Stories
 As a dispatcher, I want to create BOL records for new shipments.
-
 As a logistics manager, I want to view all active and completed BOLs.
-
 As an admin, I want to update a BOL’s status (e.g., In Transit, Delivered).
-
 As a user, I want to delete outdated or incorrect BOLs.
 
 Resources & References
-Express Documentation
+Express Documentation: https://expressjs.com/
+MongoDB Documentation: https://www.mongodb.com/docs/
+Mongoose Documentation: https://mongoosejs.com/docs/guide.html
+REST API Design Best Practices: https://restfulapi.net/
 
-MongoDB & Mongoose
+frontend github:
+https://github.com/JoanneOs/Osman_Joanne_BOLTrack2_Capstone.git
 
-Render Deployment Guide
+_______________________________
+render:
+Frontend (https://frontendrendertest.onrender.com) loads data from https://back-end-pyu8.onrender.com/api/bols.
 
-REST API Design
+Previous Project: Triway Transportation
+One of my earlier projects is Triway Transportation, a dispatching platform hosted on Netlify.
 
-Future Plans
-Add user authentication and role-based access
+You can visit the live frontend here:
+https://triwaytransportation.netlify.app/
 
-Add validation and error handling improvements
+From the Manager page on this project, I added a "View BOL Dashboard" button that links to the BOL Tracker frontend hosted on Render.
 
-Expand the BOL schema with timestamps, notes, and tracking history
-
-Implement file upload for signed delivery documents 
+Check out the Triway Transportation source code on GitHub:
+https://github.com/JoanneOs/TriWayTransportaion.git
