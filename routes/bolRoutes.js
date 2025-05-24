@@ -1,120 +1,123 @@
 import express from 'express';
-import Bol from '../models/Product.js';
-import cloudinary from '../config/cloudinary.js'; // cloudinary config
-import multer from 'multer'; // multer for file uploads
-
+import Product from '../models/Product.js'; // Import Product model instead of Bol
+import cloudinary from '../config/cloudinary.js';
+import multer from 'multer';
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() }); // store in memory
+const upload = multer({ storage: multer.memoryStorage() });
 
-
-// GET all bols
+// GET all products
 router.get('/', async (req, res) => {
   try {
-    const bols = await Bol.find().sort({ date: -1 }); // newest first
-    res.json(bols);
+    // Fetch all products sorted by newest first
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
-// GET single bol by id
+// GET single product by ID
 router.get('/:id', async (req, res) => {
   try {
-    const bol = await Bol.findById(req.params.id);
-    if (!bol) {
-      return res.status(404).json({ message: 'bol not found' });
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
     }
-    res.json(bol);
+    res.json(product);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
-// POST new bol
-
+// POST new product with image upload
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const { loadNumber, shipper, consignee, rate, miles, status } = req.body;
+    const { name, price, category, stock } = req.body;
     let imageResult = null;
 
-    if (req.file){
+    // Upload image to Cloudinary if provided
+    if (req.file) {
       const base64Image = req.file.buffer.toString('base64');
       const dataURI = `data:${req.file.mimetype};base64,${base64Image}`;
       imageResult = await cloudinary.uploader.upload(dataURI, {
-        folder: 'bol_images', // cloudinary folder
+        folder: 'product_images', // Changed from bol_images
       });
     }
-    const bol = new Bol({
-      loadNumber,
-      shipper,
-      consignee,
-      rate: parseFloat(rate),
-      miles: parseInt(miles),
-      status: status || 'Pending',
-      image: imageResult ? { url: imageResult.secure_url, publicId: imageResult.public_id } : {},
 
+    // Create new product
+    const product = new Product({
+      name,
+      price: parseFloat(price),
+      category,
+      stock: parseInt(stock),
+      image: imageResult ? { 
+        url: imageResult.secure_url, 
+        publicId: imageResult.public_id 
+      } : null,
     });
-    const newBol = await bol.save();
-    res.status(201).json(newBol);
+
+    const newProduct = await product.save();
+    res.status(201).json(newProduct);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(400).json({ message: 'validation error', errors: err.errors });
+      return res.status(400).json({ 
+        message: 'Validation error', 
+        errors: err.errors 
+      });
     }
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
-// PUT/PATCH update bol
+// PUT update product
 router.put('/:id', async (req, res) => {
   try {
-    const updatedBol = await Bol.findByIdAndUpdate(
+    const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true } // return updated, validate
+      { new: true, runValidators: true }
     );
-    if (!updatedBol) {
-      return res.status(404).json({ message: 'bol not found' });
+    
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
     }
-    res.json(updatedBol);
+    res.json(updatedProduct);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(400).json({ message: 'validation error', errors: err.errors });
+      return res.status(400).json({ 
+        message: 'Validation error', 
+        errors: err.errors 
+      });
     }
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
-// DELETE bol
+// DELETE product
 router.delete('/:id', async (req, res) => {
   try {
-
-    // check this nested try
-    try {
-      const bol = await Bol.findById(req.params.id);
-      if (!bol) {
-        return res.status(404).json({ message: 'bol not found' });
-      }
-
-      if (bol.image && bol.image.publicId) {
-        await cloudinary.uploader.destroy(bol.image.publicId); // delete from cloudinary
-      }
-    const deletedBol = await Bol.findByIdAndDelete(req.params.id);
-    if (!deletedBol) {
-      return res.status(404).json({ message: 'bol not found' });
-    }
-    res.json({ message: 'bol deleted', deletedBol });
-    } catch (err) {
-      // nested try error
-      res.status(500).json({ message: 'Server error in nested try', error: err.message });
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
     }
 
+    // Delete image from Cloudinary if exists
+    if (product.image?.publicId) {
+      await cloudinary.uploader.destroy(product.image.publicId);
+    }
+
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    res.json({ 
+      message: 'Product deleted', 
+      deletedProduct 
+    });
   } catch (err) {
-    // outer try error
-    res.status(500).json({ message: 'Server error in outer try', error: err.message });
+    res.status(500).json({ 
+      message: 'Server error', 
+      error: err.message 
+    });
   }
-
 });
 
 export default router;
-
