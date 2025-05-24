@@ -2,37 +2,19 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import bolRoutes from './routes/bolRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-const PORT = process.env.PORT || 3000;
-//app.use(cors());
-// app.use(cors({
-//   origin: [
-//     'http://localhost:5173',                 // Dev frontend
-//     'https://frontendrendertest.onrender.com' // Prod frontend
-//   ],
-//   methods: ['GET', 'POST', 'PUT', 'DELETE']
-// }));
-
-app.use(cors({
-  origin: 'http://localhost:3001', // Your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // If using cookies/auth
-}));
-
-// Middleware to parse JSON
-app.use(express.json());
-
-// CORS configuration
+// CORS Configuration
 const allowedOrigins = [
-  'http://localhost:5173',
+  'http://localhost:3000',
   'http://localhost:3001',
-  'https://frontendrendertest.onrender.com'
+  'https://your-frontend-url.vercel.app'
 ];
 
 const corsOptions = {
@@ -40,33 +22,38 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS: ' + origin));
+      callback(new Error('Blocked by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
 
 app.use(cors(corsOptions));
+app.use(express.json({ limit: '10mb' }));
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/bol-system', {
+// Database Connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/capybara-shop', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
-// Test route
-app.get('/', (req, res) => {
-  res.send('BOL Tracker API is running');
+// Routes
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
 });
 
-// API routes
-app.use('/api/bols', bolRoutes);
+app.use('/api/products', productRoutes);
 
-// Start server
+// Error Handling
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ message: 'Internal server error' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
