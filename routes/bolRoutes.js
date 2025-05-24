@@ -1,5 +1,5 @@
 import express from 'express';
-import Bol from '../models/Bol.js';
+import Bol from '../models/Product.js';
 import cloudinary from '../config/cloudinary.js'; // cloudinary config
 import multer from 'multer'; // multer for file uploads
 

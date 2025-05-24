@@ -7,9 +7,8 @@ import bolRoutes from './routes/bolRoutes.js';
 dotenv.config();
 
 const app = express();
-<<<<<<< HEAD
+
 const PORT = process.env.PORT || 3000;
-=======
 //app.use(cors());
 // app.use(cors({
 //   origin: [
@@ -25,7 +24,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // If using cookies/auth
 }));
->>>>>>> 6262440 (prod mode , cors config)
 
 // Middleware to parse JSON
 app.use(express.json());
