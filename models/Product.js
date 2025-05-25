@@ -41,13 +41,18 @@ const productSchema = new mongoose.Schema({
   toJSON: { virtuals: true }
 });
 
-// Delete images from Cloudinary when product is removed
-productSchema.post('remove', async function(doc) {
-  if (doc.images?.length) {
-    await Promise.all(
-      doc.images.map(img => 
-        img.publicId && cloudinary.uploader.destroy(img.publicId)
-    );
+// Middleware to delete images from Cloudinary before a product is deleted
+productSchema.pre('findOneAndDelete', async function(next) {
+  try {
+    const doc = await this.model.findOne(this.getFilter());
+    if (doc && doc.images?.length) {
+      await Promise.all(
+        doc.images.map(img => img.publicId ? cloudinary.uploader.destroy(img.publicId) : null)
+      );
+    }
+    next();
+  } catch (err) {
+    next(err);
   }
 });
 

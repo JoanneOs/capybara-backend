@@ -1,0 +1,4 @@
+{"level":"error","message":"500 - Only image files are allowed!","timestamp":"2025-05-25T00:59:02.788Z"}
+{"level":"error","message":"Create product error: undefined","timestamp":"2025-05-25T00:59:43.030Z"}
+{"level":"error","message":"Create product error: undefined","timestamp":"2025-05-25T00:59:56.235Z"}
+{"level":"error","message":"Create product error: Product validation failed: price: Cast to Number failed for value \"25.99\" (type string) at path \"price\" because of \"TypeError\"","timestamp":"2025-05-25T01:02:26.204Z"}

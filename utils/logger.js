@@ -13,4 +13,11 @@ const logger = winston.createLogger({
   ]
 });
 
+// Express-compatible middleware
+const loggerMiddleware = (req, res, next) => {
+  logger.info(`${req.method} ${req.originalUrl}`);
+  next();
+};
+
+export { loggerMiddleware };
 export default logger;

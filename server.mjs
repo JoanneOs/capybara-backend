@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import productRoutes from './routes/productRoutes.js';
 import { notFound, errorHandler } from './middlewares/errorHandler.js';
-import logger from './utils/logger.js';
+import logger, { loggerMiddleware } from './utils/logger.js';
 
 dotenv.config();
 connectDB();
@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(logger);
+app.use(loggerMiddleware);  // Use middleware here
 
 app.use('/api/products', productRoutes);
 

@@ -40,47 +40,48 @@ export const getProductById = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  try {
-    const { name, price, description, category, stock } = req.body;
-    
-    // Handle image uploads if present
-    let images = [];
-    if (req.files?.length) {
-      images = await Promise.all(
-        req.files.map(async file => {
-          const result = await cloudinary.uploader.upload(file.buffer.toString('base64'), {
-            folder: 'capybara_products'
-          });
-          return {
-            url: result.secure_url,
-            publicId: result.public_id,
-            isPrimary: false
-          };
-        })
-      );
-      if (images.length) images[0].isPrimary = true;
+    try {
+      const { name, price, description, category, stock } = req.body;
+      
+      let images = [];
+      if (req.files?.length) {
+        images = await Promise.all(
+          req.files.map(async file => {
+            const dataUri = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+            const result = await cloudinary.uploader.upload(dataUri, {
+              folder: 'capybara_products'
+            });
+            return {
+              url: result.secure_url,
+              publicId: result.public_id,
+              isPrimary: false
+            };
+          })
+        );
+        if (images.length) images[0].isPrimary = true;
+      }
+  
+      const product = new Product({
+        name,
+        price,
+        description,
+        category,
+        stock,
+        images
+      });
+  
+      await product.save();
+      
+      res.status(201).json(product);
+    } catch (err) {
+      logger.error(`Create product error: ${err.message}`);
+      res.status(400).json({ 
+        message: 'Failed to create product',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+      });
     }
-
-    const product = new Product({
-      name,
-      price,
-      description,
-      category,
-      stock,
-      images
-    });
-
-    await product.save();
-    
-    res.status(201).json(product);
-  } catch (err) {
-    logger.error(`Create product error: ${err.message}`);
-    res.status(400).json({ 
-      message: 'Failed to create product',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
-  }
-};
+  };
+  
 
 export const updateProduct = async (req, res) => {
   try {
